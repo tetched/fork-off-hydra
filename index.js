@@ -47,6 +47,7 @@ const progressBar = new cliProgress.SingleBar(
 let prefixes = [
   "0x26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da9" /* System.Account */,
 ];
+
 const skippedModulesPrefix = [
   "System",
   "Session",
@@ -166,6 +167,30 @@ async function main() {
   forkedSpec.genesis.raw.top[
     "0x5f3e4907f716ac89b6347d15ececedcaf7dad0317324aecae8744b87fc95f2f3"
   ] = "0x02";
+
+  // HydraDX Snakenet Gen1
+
+  // Set initial election members
+  forkedSpec.genesis.raw.top[
+    "0xe2e62dd81c48a88f73b6f6463555fd8eba7fb8745735dc3be2a2c61a72c39e78"
+  ] =
+    "0x040abad795adcb5dee45d29528005b1f78d55fc170844babde88df84016c6cd14d00203d88792d0000000000000000000000000000000000000000000000000000";
+
+  // Set initial council
+  forkedSpec.genesis.raw.top[
+    "0x11f3ba2e1cdd6d62f2ff9b5589e7ff81ba7fb8745735dc3be2a2c61a72c39e78"
+  ] = "0x040abad795adcb5dee45d29528005b1f78d55fc170844babde88df84016c6cd14d";
+
+  // Set technical committee
+  forkedSpec.genesis.raw.top[
+    "0x8985776095addd4789fccbce8ca77b23ba7fb8745735dc3be2a2c61a72c39e78"
+  ] =
+    "0x18d6cf8789dce651cb54a4036406f4aa0c771914d345c004ad0567b814c71fb637bc96ec00952efa8f0e3e08b36bf5096bcb877acac536e478aecb72868db5db022875dd47bc1bcb70e23de79e7538c312be12c716033bbae425130e46f5f2b35e644643bf953233d08c4c9bae0acd49f3baa7658d9b342b7e6879bb149ee6e44cccdb435892c9883656d0398b2b67023ba1e11bda0c7f213f70fdac54c6abab3ff461c5ae6e80bf4af5b84452789c17b0b0a095a2d77c2a407978147de2d5b572";
+
+  //RefCount
+  forkedSpec.genesis.raw.top[
+    "0x26aa394eea5630e07c48ae0c9558cef7c21aab032aaa6e946ca50ad39ab66603"
+  ] = "0x01";
 
   fs.writeFileSync(forkedSpecPath, JSON.stringify(forkedSpec, null, 4));
 
