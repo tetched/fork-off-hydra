@@ -145,7 +145,7 @@ async function main() {
   let forkedSpec = JSON.parse(fs.readFileSync(forkedSpecPath, "utf8"));
 
   // Modify chain name and id
-  forkedSpec.name = originalSpec.name;
+  forkedSpec.name = originalSpec.name + " Gen2";
   forkedSpec.id = originalSpec.id;
   forkedSpec.protocolId = originalSpec.protocolId + "-gen2";
 
@@ -186,6 +186,11 @@ async function main() {
     "0x8985776095addd4789fccbce8ca77b23ba7fb8745735dc3be2a2c61a72c39e78"
   ] =
     "0x18d6cf8789dce651cb54a4036406f4aa0c771914d345c004ad0567b814c71fb637bc96ec00952efa8f0e3e08b36bf5096bcb877acac536e478aecb72868db5db022875dd47bc1bcb70e23de79e7538c312be12c716033bbae425130e46f5f2b35e644643bf953233d08c4c9bae0acd49f3baa7658d9b342b7e6879bb149ee6e44cccdb435892c9883656d0398b2b67023ba1e11bda0c7f213f70fdac54c6abab3ff461c5ae6e80bf4af5b84452789c17b0b0a095a2d77c2a407978147de2d5b572";
+
+  // Genesis history
+  forkedSpec.genesis.raw.top[
+    "0x1754677a24055221d22db56f83f5e21390895d6c6b21a85c004b8942c3bc35ae"
+  ] = "0x800ed32bfcab4a83517fac88f2aa7cbc2f88d3ab93be9a12b6188a036bf8a943c280f3c43294255f2d0cd8b3bc8787d18cc2adcec581f74d23df15ca75b8b77cd507"
 
   //RefCount
   forkedSpec.genesis.raw.top[

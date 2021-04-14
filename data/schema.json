@@ -26,6 +26,10 @@
     "IntentionType": {
       "_enum": ["SELL", "BUY"]
     },
+    "Chain": {
+      "genesis_hash": "Vec<u8>",
+      "last_block_hash": "Vec<u8>"
+    },
     "LookupSource": "AccountId",
     "Price": "Balance"
   }
