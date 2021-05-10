@@ -33,6 +33,44 @@ const progressBar = new cliProgress.SingleBar(
   cliProgress.Presets.shades_classic
 );
 
+// CLEAR storage maps from forked spec. WARNING!
+// ALL OTHER DATA WILL BE COPIED FROM THE PREV SPEC.
+// MAKE SURE TO CLEAR DATA SO WE DON'T HAVE CONFLICTS.
+let clearPrefixes = [
+  "0x1cb6f36e027abb2091cfb5110ab5087faacf00b9b41fda7a9268821c2a2b3e4c", // Babe/NextAuthorities
+  "0xcec5070d609dd3497f72bde07fc96ba0726380404683fc89e8233450c8aa1950", // Session/KeyOwner
+  "0xcec5070d609dd3497f72bde07fc96ba04c014e6bf8b8c2c011e7290b85696bb3", // Session/NextKeys
+  "0xcec5070d609dd3497f72bde07fc96ba0726380404683fc89e8233450c8aa1950", // Session/KeyOwner
+  "0xcec5070d609dd3497f72bde07fc96ba04c014e6bf8b8c2c011e7290b85696bb3", // Session/NextKeys
+  "0x5f3e4907f716ac89b6347d15ececedca3ed14b45ed20d054f05e37e2542cfe70", // Staking/Bonded
+  "0x5f3e4907f716ac89b6347d15ececedca88dcde934c658227ee1dfafcd6e16903", // Staking/Validators
+  "0x5f3e4907f716ac89b6347d15ececedca308ce9615de0775a82f8a94dc3d285a1", // Staking/StorageVersion
+  "0x5f3e4907f716ac89b6347d15ececedca9220e172bed316605f73f1ff7b4ade98", // Staking/Payee
+  "0x5f3e4907f716ac89b6347d15ececedca9c6a637f62ae2af1c7e31eed7e96be04", // Staking/Nominators
+  "0x5f3e4907f716ac89b6347d15ececedca422adb579f1dbf4f3886c5cfa3bb8cc4", // Staking/Ledger
+  "0xf0c365c3cf59d671eb72da0e7a4113c49f1f0515f462cdcf84e0f1d6045dfcbb", // Timestamp/Now
+  "0xd5c41b52a371aa36c9254ce34324f2a5", // Offences
+  "0x26aa394eea5630e07c48ae0c9558cef7", // System
+];
+
+// List of modules to be skipped from the new chain.
+// You can still specify specific storage prefixes to include. Even if you skip it here.
+const skippedModulesPrefix = [
+  "Authorship",
+  "System",
+  "Staking",
+  "Session",
+  "Babe",
+  "Grandpa",
+  "ImOnline",
+  "PhragmenElection",
+  "ElectionProviderMultiPhase",
+  "Treasury",
+  "Timestamp",
+  "GrandpaFinality",
+  "FinalityTracker",
+];
+
 /**
  * All module prefixes except those mentioned in the skippedModulesPrefix will be added to this by the script.
  * If you want to add any past module or part of a skipped module, add the prefix here manually.
@@ -48,47 +86,14 @@ const progressBar = new cliProgress.SingleBar(
  */
 let prefixes = [
   "0x26aa394eea5630e07c48ae0c9558cef7b99d880ec681799c0cf30e8886371da9", // System/Account
-  "0x1cb6f36e027abb2091cfb5110ab5087f5e0621c4869aa60c02be9adcc98a0d1d", // Babe/Authorities // DISABLE FOR TESTNET
-  "0x1cb6f36e027abb2091cfb5110ab5087faacf00b9b41fda7a9268821c2a2b3e4c", // Babe/NextAuthorities // DISABLE FOR TESTNET
+  "0xcec5070d609dd3497f72bde07fc96ba0726380404683fc89e8233450c8aa1950", // Session/KeyOwner
+  "0xcec5070d609dd3497f72bde07fc96ba04c014e6bf8b8c2c011e7290b85696bb3", // Session/NextKeys
   "0x5f3e4907f716ac89b6347d15ececedca3ed14b45ed20d054f05e37e2542cfe70", // Staking/Bonded
-  "0x5f3e4907f716ac89b6347d15ececedca88dcde934c658227ee1dfafcd6e16903", // Staking/Validators // DISABLE FOR TESTNET
-  "0x5f3e4907f716ac89b6347d15ececedca138e71612491192d68deab7e6f563fe1", // Staking/ValidatorCount
+  "0x5f3e4907f716ac89b6347d15ececedca88dcde934c658227ee1dfafcd6e16903", // Staking/Validators
   "0x5f3e4907f716ac89b6347d15ececedca308ce9615de0775a82f8a94dc3d285a1", // Staking/StorageVersion
   "0x5f3e4907f716ac89b6347d15ececedca9220e172bed316605f73f1ff7b4ade98", // Staking/Payee
   "0x5f3e4907f716ac89b6347d15ececedca9c6a637f62ae2af1c7e31eed7e96be04", // Staking/Nominators
-  "0x5f3e4907f716ac89b6347d15ececedcab49a2738eeb30896aacb8b3fb46471bd", // Staking/MinimumValidatorCount // DISABLE FOR TESTNET
-];
-
-// CLEAR storage maps from forked spec (useful for clearing data if using running chain as a base)
-let clearPrefixes = [
-  "0x5f3e4907f716ac89b6347d15ececedca88dcde934c658227ee1dfafcd6e16903", // Staking/Validators
-  "0x5f3e4907f716ac89b6347d15ececedca3ed14b45ed20d054f05e37e2542cfe70", // Staking/Bonded
-  "0x5f3e4907f716ac89b6347d15ececedca80cc6574281671b299c1727d7ac68cab", // Staking/ErasRewardsPoints
-  "0x5f3e4907f716ac89b6347d15ececedca8bde0a0ea8864605e3b68ed9cb2da01b", // Staking/ErasStakers
-  "0x5f3e4907f716ac89b6347d15ececedca42982b9d6c7acc99faa9094c912372c2", // Staking/ErasStakersClipped
-  "0x5f3e4907f716ac89b6347d15ececedcaa141c4fe67c2d11f4a10c6aca7a79a04", // Staking/ErasTotalStake
-  "0x5f3e4907f716ac89b6347d15ececedca682db92dde20a10d96d00ff0e9e221c0", // Staking/ErasValidatorPrefs
   "0x5f3e4907f716ac89b6347d15ececedca422adb579f1dbf4f3886c5cfa3bb8cc4", // Staking/Ledger
-  "0x5f3e4907f716ac89b6347d15ececedca9220e172bed316605f73f1ff7b4ade98", // Staking/Payee
-  "0x5f3e4907f716ac89b6347d15ececedca9c6a637f62ae2af1c7e31eed7e96be04", // Staking/Nominators
-  "0x5f3e4907f716ac89b6347d15ececedcaad6e15ee7bfd5d55eba1012487d3af54", // Staking/ValidatorSlashInEra
-  "0xd5c41b52a371aa36c9254ce34324f2a560dc8ef000cdbdc859dd352229ce16fb", // Offences/ConcurrentReportsIndex
-  "0xd5c41b52a371aa36c9254ce34324f2a53589c0dac50da6fb3a3611eb32bcd27e", // Offences/ReportsByKindIndex
-  "0xd5c41b52a371aa36c9254ce34324f2a5b262e9238fa402540c250bc3f5d6188d", // Offences/Reports
-];
-
-const skippedModulesPrefix = [
-  "Authorship",
-  "System",
-  "Staking",
-  "Babe",
-  "Grandpa",
-  "ImOnline",
-  "PhragmenElection",
-  "ElectionProviderMultiPhase",
-  "Treasury",
-  "GrandpaFinality",
-  "FinalityTracker",
 ];
 
 async function main() {
@@ -170,11 +175,10 @@ async function main() {
     binaryPath + " build-spec --chain=lerna --raw > " + originalSpecPath
   );
 
-  if (dev) execSync(binaryPath + " build-spec --dev --raw > " + forkedSpecPath);
-  else
-    execSync(
-      binaryPath + " build-spec --chain=lerna --raw > " + forkedSpecPath
-    );
+  //If you want to create fork for development this is the setting
+  //if (dev) execSync(binaryPath + " build-spec --dev --raw > " + forkedSpecPath);
+  //else
+  execSync(binaryPath + " build-spec --chain=lerna --raw > " + forkedSpecPath);
 
   let storage = JSON.parse(fs.readFileSync(storagePath, "utf8"));
   let originalSpec = JSON.parse(fs.readFileSync(originalSpecPath, "utf8"));
@@ -185,15 +189,19 @@ async function main() {
   if (dev) forkedSpec.id = "test";
   else forkedSpec.id = originalSpec.id;
 
-  forkedSpec.protocolId = "hdx-gen3";
+  forkedSpec.protocolId = "hdx-gen3-1";
 
-  forkedSpec.bootNodes = [
-    "/dns/p2p-01.snakenet.hydradx.io/tcp/30333/p2p/12D3KooWAJ8t7rsWvV7d1CRCT7afwtmBQBrRT7mMNDVCWK7n9CrD",
-    "/dns/p2p-02.snakenet.hydradx.io/tcp/30333/p2p/12D3KooWErP8DjDoVFjsCCzvD9mFZBA6Y1VKMEBNH8vKCWDZDHz5",
-    "/dns/p2p-03.snakenet.hydradx.io/tcp/30333/p2p/12D3KooWH9rsDFq3wo13eKR5PWCvEDieK8uUKd1C1dLQNNxeU5AU",
-  ];
+  // GENESIS 3
 
-  // Iterate through prefixes and clear them
+  // USE THIS TO CHANGE BOOTNODES
+  // forkedSpec.bootNodes = [
+  //   "/tcp/30333/p2p/12D3KooWAARuC6mZWFBBscoBs1eSmyx8kcswDgZLRowfTtVGLkzR",
+  // ];
+
+  let validators = [];
+  let nominators = [];
+
+  // Iterate through prefixes from the original chain and clear them
   Object.keys(forkedSpec.genesis.raw.top)
     .filter((i) => clearPrefixes.some((prefix) => i.startsWith(prefix)))
     .forEach((i) => delete forkedSpec.genesis.raw.top[i]);
@@ -203,16 +211,61 @@ async function main() {
     .filter((i) => prefixes.some((prefix) => i[0].startsWith(prefix)))
     .forEach(([key, value]) => (forkedSpec.genesis.raw.top[key] = value));
 
+  //Get list of nominators for bonus rewards
+  Object.keys(forkedSpec.genesis.raw.top)
+    .filter((i) =>
+      i.startsWith(
+        "0x5f3e4907f716ac89b6347d15ececedca9c6a637f62ae2af1c7e31eed7e96be04"
+      )
+    )
+    .forEach((i) => {
+      let nominator = api.createType("AccountId", "0x" + i.slice(-64));
+      nominators.push(nominator.toHex());
+    });
+
+  //Get list of validators for bonus rewards
+  Object.keys(forkedSpec.genesis.raw.top)
+    .filter((i) =>
+      i.startsWith(
+        "0x5f3e4907f716ac89b6347d15ececedca88dcde934c658227ee1dfafcd6e16903"
+      )
+    )
+    .forEach((i) => {
+      let validator = api.createType("AccountId", "0x" + i.slice(-64));
+      validators.push(validator.toHex());
+    });
+
+  // Remove Information about staking rewards as that would be in the future on the new chain
+  Object.keys(forkedSpec.genesis.raw.top)
+    .filter((i) =>
+      i.startsWith(
+        "0x5f3e4907f716ac89b6347d15ececedca422adb579f1dbf4f3886c5cfa3bb8cc4"
+      )
+    )
+    .forEach((i) => {
+      let ledger = api.createType(
+        "StakingLedger",
+        forkedSpec.genesis.raw.top[i]
+      );
+      let noHistory = api.createType("StakingLedger", {
+        stash: ledger.stash,
+        total: ledger.total,
+        active: ledger.active,
+      });
+
+      forkedSpec.genesis.raw.top[i] = noHistory.toHex();
+    });
+
+  console.log("Creating list of", validators.length, "validators");
+  console.log("Creating list of", nominators.length, "nominators");
+
+  fs.writeFileSync("validators.json", JSON.stringify(validators, 2, 2));
+  fs.writeFileSync("nominators.json", JSON.stringify(nominators, 2, 2));
+
   // Delete System.LastRuntimeUpgrade to ensure that the on_runtime_upgrade event is triggered
   delete forkedSpec.genesis.raw.top[
     "0x26aa394eea5630e07c48ae0c9558cef7f9cce9c888469bb1a0dceaa129672ef8"
   ];
-
-  // Set the code to the current runtime code
-  forkedSpec.genesis.raw.top["0x3a636f6465"] =
-    "0x" + fs.readFileSync(hexPath, "utf8").trim();
-
-  // HydraDX Snakenet Gen3
 
   // Genesis history
   forkedSpec.genesis.raw.top[
@@ -220,15 +273,15 @@ async function main() {
   ] =
     "0x803d75507dd46301767e601265791da1d9cb47b6ebc94e87347b635e5bf58bd04780f2da8c357140c4900cddc37ff93df8cdee3989584bffb18074878e096f6c926c";
 
-  //RefCount
+  //System/upgradedToTripleRefCount
   forkedSpec.genesis.raw.top[
-    "0x26aa394eea5630e07c48ae0c9558cef7c21aab032aaa6e946ca50ad39ab66603"
+    "0x26aa394eea5630e07c48ae0c9558cef7a7fd6c28836b9a28522dc924110cf439"
   ] = "0x01";
 
-  //Session index
+  //System/upgradedToU32RefCount
   forkedSpec.genesis.raw.top[
-    "0xcec5070d609dd3497f72bde07fc96ba072763800a36a99fdfc7c10f6415f6ee6"
-  ] = "0x00000000";
+    "0x26aa394eea5630e07c48ae0c9558cef75684a022a34dd8bfa2baaf44f172b710"
+  ] = "0x01";
 
   //Current planned session
   forkedSpec.genesis.raw.top[
@@ -245,10 +298,28 @@ async function main() {
     "0x5f3e4907f716ac89b6347d15ececedca487df464e44a534ba6b0cbb32407b587"
   ] = "0x0000000000";
 
-  //DisabledValidators
+  //SET VALIDATOR PREFS FOR INTERGALACTIC
+  //VAL01
   forkedSpec.genesis.raw.top[
-    "0xcec5070d609dd3497f72bde07fc96ba05a9a74be4a5a7df60b01a6c0326c5e20"
-  ] = "0x00";
+    "0x5f3e4907f716ac89b6347d15ececedca422adb579f1dbf4f3886c5cfa3bb8cc45c6987fcf1bc8b56c3ebdc2a55d4e55c5245cb1e9e810f66940ec82a23a485491347bdbdc2726f3e2d40d9650cbc4103"
+  ] =
+    "0x5245cb1e9e810f66940ec82a23a485491347bdbdc2726f3e2d40d9650cbc41030b00407a10f35a0b00407a10f35a0000";
+
+  //VAL02
+  forkedSpec.genesis.raw.top[
+    "0x5f3e4907f716ac89b6347d15ececedca422adb579f1dbf4f3886c5cfa3bb8cc40401e578d3d4d3c55b5e85dceecee3e7fa431893b2d8196ab179793714d653ce840fcac1847c1cb32522496989c0e556"
+  ] =
+    "0xfa431893b2d8196ab179793714d653ce840fcac1847c1cb32522496989c0e5560b00407a10f35a0b00407a10f35a0000";
+
+  //VAL03
+  forkedSpec.genesis.raw.top[
+    "0x5f3e4907f716ac89b6347d15ececedca422adb579f1dbf4f3886c5cfa3bb8cc473e3541920d3f9949972f798c7e470e4be72e2daa41acfd97eed4c09a086dc84b99df8e8ddddb67e90b71c36e4826378"
+  ] =
+    "0xbe72e2daa41acfd97eed4c09a086dc84b99df8e8ddddb67e90b71c36e48263780b00407a10f35a0b00407a10f35a0000";
+
+  // Set the code to the current runtime code
+  forkedSpec.genesis.raw.top["0x3a636f6465"] =
+    "0x" + fs.readFileSync(hexPath, "utf8").trim();
 
   fs.writeFileSync(forkedSpecPath, JSON.stringify(forkedSpec, null, 4));
 
