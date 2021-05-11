@@ -40,8 +40,6 @@ let clearPrefixes = [
   "0x1cb6f36e027abb2091cfb5110ab5087faacf00b9b41fda7a9268821c2a2b3e4c", // Babe/NextAuthorities
   "0xcec5070d609dd3497f72bde07fc96ba0726380404683fc89e8233450c8aa1950", // Session/KeyOwner
   "0xcec5070d609dd3497f72bde07fc96ba04c014e6bf8b8c2c011e7290b85696bb3", // Session/NextKeys
-  "0xcec5070d609dd3497f72bde07fc96ba0726380404683fc89e8233450c8aa1950", // Session/KeyOwner
-  "0xcec5070d609dd3497f72bde07fc96ba04c014e6bf8b8c2c011e7290b85696bb3", // Session/NextKeys
   "0x5f3e4907f716ac89b6347d15ececedca3ed14b45ed20d054f05e37e2542cfe70", // Staking/Bonded
   "0x5f3e4907f716ac89b6347d15ececedca88dcde934c658227ee1dfafcd6e16903", // Staking/Validators
   "0x5f3e4907f716ac89b6347d15ececedca308ce9615de0775a82f8a94dc3d285a1", // Staking/StorageVersion
