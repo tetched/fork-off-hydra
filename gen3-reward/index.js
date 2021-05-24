@@ -20,7 +20,7 @@ async function main() {
   const keyring = new Keyring({ type: 'sr25519' });
   const api = await ApiPromise.create({ provider, types });
 
-  const [chain,, nodeVersion] = await Promise.all([
+  const [chain, nodeVersion] = await Promise.all([
     api.rpc.system.chain(),
     api.rpc.system.version()
   ]);
